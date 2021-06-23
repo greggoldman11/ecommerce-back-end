@@ -38,7 +38,12 @@ router.get('/products', (req, res, next) => {
 })
 
 // Show product
-// router.get()
+router.get('/products/:id', (req, res, next) => {
+  Product.findById(req.params.id)
+    .then(handle404)
+    .then(product => res.status(200).json({ product: product.toObject() }))
+    .catch(next)
+})
 
 // Update product
 // router.patch()
