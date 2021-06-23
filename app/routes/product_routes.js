@@ -28,7 +28,14 @@ router.post('/products', requireToken, (req, res, next) => {
 })
 
 // Index all products
-// router.get('/products')
+router.get('/products', (req, res, next) => {
+  Product.find()
+    .then(products => {
+      return products.map(product => product.toObject())
+    })
+    .then(products => res.status(200).json({ products: products }))
+    .catch(next)
+})
 
 // Show product
 // router.get()
