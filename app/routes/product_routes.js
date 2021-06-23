@@ -46,7 +46,18 @@ router.get('/products/:id', (req, res, next) => {
 })
 
 // Update product
-// router.patch()
+router.patch('/products/:id', requireToken, removeBlanks, (req, res, next) => {
+  delete req.body.product.owner
+
+  Product.findById(req.params.id)
+    .then(handle404)
+    .then(product => {
+      requireOwnership(req, product)
+      return product.updateOne(req.body.product)
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
 
 // This will delete book
 // router.delete()
