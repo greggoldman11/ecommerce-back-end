@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    reuired: true
+    required: true
   }
 })
 module.exports = mongoose.model('Product', productSchema)
