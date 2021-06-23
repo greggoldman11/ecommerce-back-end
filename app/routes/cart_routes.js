@@ -40,7 +40,7 @@ router.patch('/cart/:id', requireToken, (req, res, next) => {
     .then(handle404)
     .then(cart => {
       // requireOwnership(req, cart)
-      return cart.updateOne({ cart: req.body.product.id })
+      // return cart.updateOne({ cart: req.body.product.id })
     })
     .then(() => res.sendStatus(204))
     .catch(next)
