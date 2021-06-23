@@ -60,6 +60,15 @@ router.patch('/products/:id', requireToken, removeBlanks, (req, res, next) => {
 })
 
 // This will delete book
-// router.delete()
+router.delete('/products/:id', requireToken, (req, res, next) => {
+  Product.findById(req.params.id)
+    .then(handle404)
+    .then(product => {
+      requireOwnership(req, product)
+      product.deleteOne()
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
 
 module.exports = router
