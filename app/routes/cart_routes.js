@@ -37,7 +37,30 @@ router.patch('/cart/:id', requireToken, (req, res, next) => {
       return cart.save()
     })
     .then(cart => console.log(cart.toJSON()))
-    .then(handle404)
+    // .then(handle404)
+    .then(cart => {
+      // requireOwnership(req, cart)
+      // return cart.updateOne({ cart: req.body.product.id })
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
+router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
+  const id = req.params.id
+  console.log(id)
+  console.log(typeof req.body.product)
+  Cart.findById(id)
+    .then(cart => {
+      console.log(req.body)
+      const index = cart.products.indexOf(req.body.product.id)
+      if (index > -1) {
+        cart.products.splice(index, 1)
+      }
+
+      return cart.save()
+    })
+    .then(cart => console.log(cart.toJSON()))
+    // .then(handle404)
     .then(cart => {
       // requireOwnership(req, cart)
       // return cart.updateOne({ cart: req.body.product.id })
@@ -56,10 +79,10 @@ router.get('/cart', requireToken, (req, res, next) => {
 })
 router.get('/cart/:id', requireToken, (req, res, next) => {
   Cart.findById(req.params.id)
+    .populate('products')
     .then(handle404)
     .then(cart => res.status(200).json({ cart: cart.toObject() }))
     .catch(next)
 })
-
 
 module.exports = router
