@@ -66,6 +66,7 @@ app.use(userRoutes)
 app.use(errorHandler)
 
 // run API on designated port (4741 in this case)
+app.get('/', (req, res) => res.send('Testing server for Ecommerce site'))
 app.listen(port, () => {
   console.log('listening on port ' + port)
 })
