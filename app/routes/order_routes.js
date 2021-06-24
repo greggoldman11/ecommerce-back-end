@@ -23,15 +23,58 @@ router.post('/order', requireToken, (req, res, next) => {
 
 // This route will get all of the users orders
 router.get('/order', requireToken, (req, res, next) => {
-  Order.find()
+  Order.find({ owner: req.body.owner })
+    .populate('cart')
     .then(handle404)
     .then(foundOrders => {
-      requireOwnership(req, foundOrders)
-    })
-    .then(authOrders => {
-      return authOrders.map(order => order.toObject())
+      return foundOrders.map(orders => orders.toObject())
     })
     .then(orders => res.status(200).json({ orders }))
+})
+
+// This will get a single user order
+router.get('/order/:id', requireToken, (req, res, next) => {
+  Order.findById(req.params.id)
+    .populate('cart')
+    .then(handle404)
+    .then(order => res.status(200).json({ order }))
+    .catch(next)
+})
+
+// This will add new orders to the users order collection
+router.patch('/add-order/:id', requireToken, (req, res, next) => {
+  Order.findById(req.params.id)
+    .then(handle404)
+    .then(orders => {
+      console.log(req.body)
+      orders.cart.push(req.body.cart.products.id)
+      return orders.save()
+    })
+    .then(updatedorders => res.status(204).json({ updatedorders }))
+    .catch(next)
+})
+
+// This will remove an order form user order collection
+router.patch('/remove-order/:id', requireToken, (req, res, next) => {
+  Order.findById(req.params.id)
+    .then(handle404)
+    .then(order => {
+      const orderIndex = order.cart.indexOf(req.body.cart.id)
+      order.cart.splice(orderIndex, 1)
+      return order.save()
+    })
+    .then((updatedorders) => res.status(204).json({ updatedorders }))
+    .catch(next)
+})
+
+// This will delete an order from user order collection
+router.delete('/order/:id', requireToken, (req, res, next) => {
+  Order.findById(req.params.id)
+    .then(handle404)
+    .then(foundOrder => {
+      foundOrder.deleteOne()
+    })
+    .then(() => res.status(204).json())
 })
 
 module.exports = router

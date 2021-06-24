@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const orderSchema = new Schema({
-  date: Date,
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -11,6 +10,9 @@ const orderSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Cart'
   }]
+},
+{
+  timestamps: true
 })
 
 module.exports = mongoose.model('Order', orderSchema)
