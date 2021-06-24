@@ -18,6 +18,7 @@ const router = express.Router()
 
 // Create product
 router.post('/products', requireToken, (req, res, next) => {
+  console.log(req.body)
   req.body.product.owner = req.user.id
 
   Product.create(req.body.product)
