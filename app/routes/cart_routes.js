@@ -26,7 +26,7 @@ router.post('/cart', requireToken, (req, res, next) => {
     .catch(next)
 })
 
-router.patch('/cart/:id', requireToken, (req, res, next) => {
+router.patch('/cart/:id', requireToken, requireOwnership, (req, res, next) => {
   const id = req.params.id
   console.log(id)
   console.log(typeof req.body.product)
@@ -39,13 +39,13 @@ router.patch('/cart/:id', requireToken, (req, res, next) => {
     .then(cart => console.log(cart.toJSON()))
     // .then(handle404)
     .then(cart => {
-      // requireOwnership(req, cart)
-      // return cart.updateOne({ cart: req.body.product.id })
+      requireOwnership(req, cart)
+      return cart.updateOne({ cart: req.body.product.id })
     })
     .then(() => res.sendStatus(204))
     .catch(next)
 })
-router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
+router.patch('/cart-delete/:id', requireToken, requireOwnership, (req, res, next) => {
   const id = req.params.id
   console.log(id)
   console.log(typeof req.body.product)
@@ -62,8 +62,8 @@ router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
     .then(cart => console.log(cart.toJSON()))
     // .then(handle404)
     .then(cart => {
-      // requireOwnership(req, cart)
-      // return cart.updateOne({ cart: req.body.product.id })
+      requireOwnership(req, cart)
+      return cart.updateOne({ cart: req.body.product.id })
     })
     .then(() => res.sendStatus(204))
     .catch(next)
