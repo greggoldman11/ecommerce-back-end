@@ -7,24 +7,17 @@ const Cart = require('./../models/cart')
 
 // require custom errors
 const {
-  handle404,
-  requireOwnership
+  handle404
 } = require('../../lib/custom_errors')
-
-const removeBlanks = require('../../lib/remove_blank_fields')
 
 const requireToken = passport.authenticate('bearer', { session: false })
 const router = express.Router()
 
+// Create a new cart
 router.post('/cart', requireToken, (req, res, next) => {
-  // const owner = req.user._id
-  console.log('This is req: ', req.user._id)
+  // set the owner of the cart to the user's id
   req.body.owner = req.user._id
   Cart.create(req.body)
-    // .then(newCart =>
-    //   console.log(newCart)
-    //   // {newCart.owner: req.body
-    // )
     .then(cart => {
       res.status(201).json({ cart: cart.toObject() })
     })
