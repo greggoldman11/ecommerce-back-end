@@ -17,9 +17,14 @@ const requireToken = passport.authenticate('bearer', { session: false })
 const router = express.Router()
 
 router.post('/cart', requireToken, (req, res, next) => {
-  const owner = req.user._id
-  console.log('This is req: ', req.body)
-  Cart.create(owner)
+  // const owner = req.user._id
+  console.log('This is req: ', req.user._id)
+  req.body.owner = req.user._id
+  Cart.create(req.body)
+    // .then(newCart =>
+    //   console.log(newCart)
+    //   // {newCart.owner: req.body
+    // )
     .then(cart => {
       res.status(201).json({ cart: cart.toObject() })
     })
@@ -70,8 +75,10 @@ router.patch('/cart-delete/:id', requireToken, requireOwnership, (req, res, next
 })
 
 router.get('/cart', requireToken, (req, res, next) => {
-  Cart.find({ owner: req.body.owner })
+  Cart.find()
     .then(cart => {
+      console.log(cart)
+      // requireOwnership(req, cart)
       return cart.map(cart => cart.toObject())
     })
     .then(cart => res.status(200).json({ cart: cart }))
