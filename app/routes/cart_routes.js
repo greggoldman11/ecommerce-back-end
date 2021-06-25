@@ -17,9 +17,14 @@ const requireToken = passport.authenticate('bearer', { session: false })
 const router = express.Router()
 
 router.post('/cart', requireToken, (req, res, next) => {
-  const owner = req.user._id
-  console.log('This is req: ', req.body)
-  Cart.create(owner)
+  // const owner = req.user._id
+  console.log('This is req: ', req.user._id)
+  req.body.owner = req.user._id
+  Cart.create(req.body)
+    // .then(newCart =>
+    //   console.log(newCart)
+    //   // {newCart.owner: req.body
+    // )
     .then(cart => {
       res.status(201).json({ cart: cart.toObject() })
     })
