@@ -60,7 +60,7 @@ router.patch('/products/:id', requireToken, removeBlanks, (req, res, next) => {
     .catch(next)
 })
 
-// This will delete book
+// This will delete product
 router.delete('/products/:id', requireToken, (req, res, next) => {
   Product.findById(req.params.id)
     .then(handle404)
