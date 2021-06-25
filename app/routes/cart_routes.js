@@ -70,8 +70,10 @@ router.patch('/cart-delete/:id', requireToken, requireOwnership, (req, res, next
 })
 
 router.get('/cart', requireToken, (req, res, next) => {
-  Cart.find({ owner: req.body.owner })
+  Cart.find()
     .then(cart => {
+      console.log(cart)
+      // requireOwnership(req, cart)
       return cart.map(cart => cart.toObject())
     })
     .then(cart => res.status(200).json({ cart: cart }))
