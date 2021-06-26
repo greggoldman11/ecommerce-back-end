@@ -16,9 +16,10 @@ const router = express.Router()
 // Create a new cart
 router.post('/cart', requireToken, (req, res, next) => {
   // set the owner of the cart to the user's id
-  req.body.owner = req.user._id
-  Cart.create(req.body)
+  req.body.cart.owner = req.user._id
+  Cart.create(req.body.cart)
     .then(cart => {
+      console.log(cart)
       res.status(201).json({ cart: cart.toObject() })
     })
     .catch(next)
