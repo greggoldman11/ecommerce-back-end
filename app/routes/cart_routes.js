@@ -28,12 +28,13 @@ router.post('/cart', requireToken, (req, res, next) => {
 router.patch('/cart/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   console.log(id)
-  console.log(typeof req.body.product)
+  console.log(typeof req.body.products)
   Cart.findById(id)
     .then(handle404)
     .then(cart => {
+      console.log(cart)
       console.log(req.body)
-      cart.products.push(req.body.product.id)
+      cart.products.push(req.body.products.id)
       return cart.save()
     })
     .then(() => res.sendStatus(204))
