@@ -28,7 +28,6 @@ router.post('/cart', requireToken, (req, res, next) => {
 router.patch('/cart/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   console.log(id)
-  console.log(typeof req.body.products)
   Cart.findById(id)
     .then(handle404)
     .then(cart => {
@@ -47,7 +46,7 @@ router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
   Cart.findById(id)
     .then(cart => {
       console.log(req.body)
-      const index = cart.products.indexOf(req.body.product)
+      const index = cart.products.indexOf(req.body.products.id)
       if (index > -1) {
         cart.products.splice(index, 1)
       }
