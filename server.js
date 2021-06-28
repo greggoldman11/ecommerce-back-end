@@ -14,6 +14,7 @@ const cartRoutes = require('./app/routes/cart_routes')
 const errorHandler = require('./lib/error_handler')
 const requestLogger = require('./lib/request_logger')
 
+const stripe = require('stripe')('sk_test_51J6FY8B3vfOMXNO3DYLapg7bjmOGVc9Pu7iXvO1wddBvvAixWVUYzVNkyrowGFcyuTpzwQb7oTGZfGnwU15PtW1d00kqV2GSK6')
 // require database configuration logic
 // `db` will be the actual Mongo URI as a string
 const db = require('./config/db')
@@ -69,8 +70,34 @@ app.use(cartRoutes)
 // passed any error messages from them
 app.use(errorHandler)
 
-// run API on designated port (4741 in this case)
+// Create Stripe checkout session
+app.post('/create-checkout-session', async (req, res) => {
+  const session = await stripe.checkout.sessions.create({
+    // Specify payment type
+    payment_method_types: ['card'],
+    line_items: [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'product name',
+            images: ['https://i.imgur.com/EHyR2nP.png']
+          },
+          unit_amount: 2000
+        },
+        quantity: 1
+      }
+    ],
+    mode: 'payment',
+    // Redirect URLs
+    success_url: 'https://blooming-lowlands-35038.herokuapp.com/success.html',
+    cancel_url: 'https://blooming-lowlands-35038.herokuapp.com/cancel.html'
+  })
 
+  res.json({ id: session.id })
+})
+
+// run API on designated port (4741 in this case)
 app.listen(port, () => {
   console.log('listening on port ' + port)
 })
