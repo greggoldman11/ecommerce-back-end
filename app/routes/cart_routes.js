@@ -47,7 +47,7 @@ router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
   Cart.findById(id)
     .then(cart => {
       console.log(req.body)
-      const index = cart.products.indexOf(req.body.product.id)
+      const index = cart.products.indexOf(req.body.product)
       if (index > -1) {
         cart.products.splice(index, 1)
       }
@@ -62,6 +62,7 @@ router.get('/cart', requireToken, (req, res, next) => {
   Cart.find({owner: req.user.id})
     .populate('products')
     .then(carts => {
+      console.log(carts)
       return carts.map(cart => cart.toObject())
     })
     .then(carts => res.status(200).json({ carts: carts }))
