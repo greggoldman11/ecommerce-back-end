@@ -25,6 +25,16 @@ router.post('/cart', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+router.patch('/orders/:id', requireToken, (req, res, next) => {
+  const id = req.params.id
+  console.log(id)
+  Cart.findById(id)
+    .then(handle404)
+    .then(cart => cart.updateOne({completed: true}))
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
+
 router.patch('/cart/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   console.log(id)
