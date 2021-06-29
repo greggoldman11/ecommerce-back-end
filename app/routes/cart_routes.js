@@ -25,6 +25,7 @@ router.post('/cart', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+// Set order completed to true (Turn cart into order)
 router.patch('/orders/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   console.log(id)
@@ -35,6 +36,7 @@ router.patch('/orders/:id', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+// Add item to cart
 router.patch('/cart/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   console.log(id)
@@ -49,6 +51,8 @@ router.patch('/cart/:id', requireToken, (req, res, next) => {
     .then(() => res.sendStatus(204))
     .catch(next)
 })
+
+// Delete item from cart
 router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   console.log(id)
@@ -67,6 +71,8 @@ router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
     .then(() => res.sendStatus(204))
     .catch(next)
 })
+
+// Retrieve all carts
 router.get('/cart', requireToken, (req, res, next) => {
   Cart.find({owner: req.user.id})
     .populate('products')
@@ -77,6 +83,8 @@ router.get('/cart', requireToken, (req, res, next) => {
     .then(carts => res.status(200).json({ carts: carts }))
     .catch(next)
 })
+
+// Show cart
 router.get('/cart/:id', requireToken, (req, res, next) => {
   Cart.findById(req.params.id)
     .populate('products')
