@@ -16,28 +16,43 @@ const router = express.Router()
 // Create a new cart
 router.post('/cart', requireToken, (req, res, next) => {
   // set the owner of the cart to the user's id
-  req.body.owner = req.user._id
-  Cart.create(req.body)
+  req.body.cart.owner = req.user._id
+  Cart.create(req.body.cart)
     .then(cart => {
+      console.log(cart)
       res.status(201).json({ cart: cart.toObject() })
     })
     .catch(next)
 })
 
+// Set order completed to true (Turn cart into order)
+router.patch('/orders/:id', requireToken, (req, res, next) => {
+  const id = req.params.id
+  console.log(id)
+  Cart.findById(id)
+    .then(handle404)
+    .then(cart => cart.updateOne({completed: true}))
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
+
+// Add item to cart
 router.patch('/cart/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   console.log(id)
-  console.log(typeof req.body.product)
   Cart.findById(id)
     .then(handle404)
     .then(cart => {
+      console.log(cart)
       console.log(req.body)
-      cart.products.push(req.body.product.id)
+      cart.products.push(req.body.products.id)
       return cart.save()
     })
     .then(() => res.sendStatus(204))
     .catch(next)
 })
+
+// Delete item from cart
 router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   console.log(id)
@@ -45,7 +60,7 @@ router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
   Cart.findById(id)
     .then(cart => {
       console.log(req.body)
-      const index = cart.products.indexOf(req.body.product.id)
+      const index = cart.products.indexOf(req.body.products.id)
       if (index > -1) {
         cart.products.splice(index, 1)
       }
@@ -56,15 +71,20 @@ router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
     .then(() => res.sendStatus(204))
     .catch(next)
 })
+
+// Retrieve all carts
 router.get('/cart', requireToken, (req, res, next) => {
   Cart.find({owner: req.user.id})
     .populate('products')
     .then(carts => {
+      console.log(carts)
       return carts.map(cart => cart.toObject())
     })
     .then(carts => res.status(200).json({ carts: carts }))
     .catch(next)
 })
+
+// Show cart
 router.get('/cart/:id', requireToken, (req, res, next) => {
   Cart.findById(req.params.id)
     .populate('products')
