@@ -65,7 +65,6 @@ router.patch('/cart-delete/:id', requireToken, (req, res, next) => {
     .catch(next)
 })
 
-
 // Retrieve all carts
 router.get('/cart', requireToken, (req, res, next) => {
   Cart.find({owner: req.user.id})
@@ -78,7 +77,6 @@ router.get('/cart', requireToken, (req, res, next) => {
 })
 
 // Show cart
-
 router.get('/cart/:id', requireToken, (req, res, next) => {
   Cart.findById(req.params.id)
     .populate('products')
