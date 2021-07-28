@@ -1,5 +1,4 @@
 // require necessary NPM packages
-// Vikki was here
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
